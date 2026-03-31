@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>加载中</title>
+  <style>
+    :root { --on-background:#e5e2e1; --on-secondary-fixed:#221b00; --outline:#aa8987; --on-primary-container:#fff9f9; --background:#0a0a0a; --primary-container:#d4393c; --surface-variant:#353534; --secondary-container:#f5d36e; --primary:#d4393c; --font-stack:system-ui,"PingFang SC","Microsoft YaHei",sans-serif; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; padding:0; background:var(--background); }
+    body { position:relative; display:flex; flex-direction:column; max-width:430px; margin:0 auto; min-height:100vh; color:var(--on-background); overflow-x:hidden; font-family:var(--font-stack); }
+    ::selection { background:var(--primary-container); color:var(--on-primary-container); }
+
+    .页面主内容 { position:relative; z-index:10; flex-grow:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1rem 1.5rem 6rem; }
+    .粒子容器 { position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; max-width:430px; height:100%; z-index:0; pointer-events:none; }
+    .粒子 { position:absolute; border-radius:9999px; }
+    .粒子小 { width:4px; height:4px; }
+    .粒子大 { width:6px; height:6px; }
+    .主色粒子 { background:var(--primary); }
+    .辅色粒子 { background:var(--secondary-container); }
+    .p1 { top:15%; left:20%; } .p2 { top:40%; left:10%; } .p3 { top:80%; left:30%; } .p4 { top:25%; right:15%; }
+    .p5 { top:60%; right:20%; } .p6 { top:10%; right:40%; } .p7 { right:10%; bottom:15%; } .p8 { right:45%; bottom:40%; }
+    .p9 { top:5%; left:45%; } .p10 { top:50%; left:50%; } .p11 { bottom:20%; left:5%; } .p12 { top:70%; left:15%; }
+
+    .加载容器 { display:flex; flex-direction:column; align-items:center; gap:2rem; }
+    .加载图标 { position:relative; width:120px; height:120px; }
+    .旋转层 { position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; transform-origin:center; animation:rotate-slow 2s linear infinite; }
+    .圆盘背景 { position:absolute; inset:1rem; background:var(--background); border:1px solid rgba(245,211,110,.1); border-radius:9999px; }
+    .中环 { position:absolute; inset:2rem; border:1px dashed rgba(245,211,110,.2); border-radius:9999px; }
+    .卦象符号 { color:var(--secondary-container); font-size:28px; line-height:1; }
+    .阴阳图 { position:absolute; width:60px; height:60px; border-radius:9999px; overflow:hidden; display:flex; box-shadow:0 0 20px rgba(245,211,110,.2); }
+    .阴阳图 svg { width:100%; height:100%; display:block; }
+
+    .加载文案 { text-align:center; }
+    .加载标题 { margin:0 0 1rem; color:#fff; font-size:1.25rem; font-weight:700; letter-spacing:-.02em; font-family:var(--font-stack); }
+    .加载提示 { margin:0; color:var(--outline); font-size:.875rem; letter-spacing:.2em; opacity:.8; font-family:var(--font-stack); }
+
+    .进度条容器 { width:200px; height:4px; background:var(--surface-variant); border-radius:2px; overflow:hidden; }
+    .进度条 { height:100%; background:var(--secondary-container); border-radius:2px; animation:progress 2s ease-in-out infinite; }
+
+    .pulse-glow { animation:pulse 3s ease-in-out infinite; transition:box-shadow .6s ease; }
+
+    @keyframes rotate-slow { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+    @keyframes pulse { 0%,100% { opacity:.3; transform:scale(1); } 50% { opacity:.8; transform:scale(1.2); } }
+    @keyframes progress { 0% { width:0; } 50% { width:70%; } 100% { width:100%; } }
+  </style>
+</head>
+<body>
+  <!-- 环境粒子背景 -->
+  <div id="particle-container" class="粒子容器">
+    <div class="粒子 粒子小 主色粒子 p1 pulse-glow" style="box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子大 辅色粒子 p2 pulse-glow" style="animation-delay:1s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子小 辅色粒子 p3 pulse-glow" style="animation-delay:2s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子大 主色粒子 p4 pulse-glow" style="animation-delay:.5s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子小 辅色粒子 p5 pulse-glow" style="animation-delay:1.5s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子大 主色粒子 p6 pulse-glow" style="animation-delay:2.5s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子小 主色粒子 p7 pulse-glow" style="animation-delay:1.2s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子小 辅色粒子 p8 pulse-glow" style="animation-delay:1.8s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子大 主色粒子 p9 pulse-glow" style="animation-delay:.3s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子小 辅色粒子 p10 pulse-glow" style="animation-delay:2.2s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子小 主色粒子 p11 pulse-glow" style="animation-delay:.7s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子大 辅色粒子 p12 pulse-glow" style="animation-delay:1.1s; box-shadow:0 0 8px #F5D36E;"></div>
+  </div>
+
+  <!-- 主体内容 -->
+  <main class="页面主内容">
+    <div class="加载容器">
+      <div class="加载图标">
+        <div class="旋转层">
+          <div class="圆盘背景"></div>
+          <div class="中环"></div>
+          <div class="阴阳图">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <path d="M 50 0 A 50 50 0 0 0 50 100 A 25 25 0 0 0 50 50 A 25 25 0 0 1 50 0" fill="#D4393C"></path>
+              <path d="M 50 0 A 50 50 0 0 1 50 100 A 25 25 0 0 0 50 50 A 25 25 0 0 1 50 0" fill="#F5D36E"></path>
+              <circle cx="50" cy="25" r="8" fill="#D4393C"></circle>
+              <circle cx="50" cy="75" r="8" fill="#F5D36E"></circle>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="加载文案">
+        <h2 class="加载标题">正在测算</h2>
+        <p class="加载提示">赛博道长正在推演天机</p>
+      </div>
+
+      <div class="进度条容器">
+        <div class="进度条"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 获取URL参数
+    function getUrlParams() {
+      const params = {};
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.forEach((value, key) => {
+        params[key] = decodeURIComponent(value);
+      });
+      return params;
+    }
+
+    const params = getUrlParams();
+
+    // 模拟运势数据生成（作为API兜底）
+    function generateFortuneData() {
+      // 根据签型生成不同的运势数据
+      const fortuneData = {
+        name: params.name || "有缘人",
+        zodiac: params.zodiac || "龙",
+        signType: params.signType || "上上签",
+        inscription: params.inscription || "紫气东来",
+        summary: "",
+        yi: [],
+        ji: [],
+        career: "",
+        wealth: "",
+        relationship: "",
+        health: ""
+      };
+
+      // 根据签型生成对应的运势内容
+      switch (params.signType) {
+        case "上上签":
+          fortuneData.summary = "东风已至百花开，贵人引路财自来，放手去做莫犹疑，2026属于你的舞台";
+          fortuneData.yi = ["大胆开口", "尝试新领域", "主动社交", "给自己放个假"];
+          fortuneData.ji = ["犹豫不决", "熬夜内耗", "独自硬扛", "跟烂人纠缠"];
+          fortuneData.career = "事业运势高涨，适合大胆尝试新机会，贵人相助，事半功倍。";
+          fortuneData.wealth = "财运亨通，正财稳定，偏财有望，适合理性投资。";
+          fortuneData.relationship = "人际关系和谐，桃花运势佳，适合拓展社交圈。";
+          fortuneData.health = "健康状况良好，情绪稳定，注意劳逸结合。";
+          break;
+        case "上签":
+          fortuneData.summary = "春山可望路迢迢，清风送爽自逍遥，心有定见无烦恼，万事顺遂乐陶陶";
+          fortuneData.yi = ["保持乐观", "适度投资", "学习新技能", "多与朋友交流"];
+          fortuneData.ji = ["过度焦虑", "冲动消费", "闭门造车", "与人争执"];
+          fortuneData.career = "事业平稳发展，有小幅度提升，注意抓住身边的机会。";
+          fortuneData.wealth = "财运平稳，正财为主，偏财机会较少，建议稳健理财。";
+          fortuneData.relationship = "人际关系良好，有新的社交机会，注意维系旧友。";
+          fortuneData.health = "健康状况稳定，注意饮食均衡，适当运动。";
+          break;
+        case "中签":
+          fortuneData.summary = "静水流深自在行，守拙安然心自明，平步青云需努力，知足常乐是真经";
+          fortuneData.yi = ["脚踏实地", "专注当下", "学习沉淀", "保持平衡"];
+          fortuneData.ji = ["好高骛远", "急功近利", "与人攀比", "消极抱怨"];
+          fortuneData.career = "事业发展平稳，需要更多努力和耐心，稳步前进。";
+          fortuneData.wealth = "财运普通，收入稳定，支出合理，建议储蓄为主。";
+          fortuneData.relationship = "人际关系一般，需要主动维护，避免不必要的冲突。";
+          fortuneData.health = "健康状况一般，注意休息，避免过度劳累。";
+          break;
+        case "下签":
+          fortuneData.summary = "破茧重生需忍耐，风雨兼程莫徘徊，淬火成金终有时，否极泰来笑口开";
+          fortuneData.yi = ["保持坚韧", "寻求帮助", "学习反思", "调整心态"];
+          fortuneData.ji = ["自暴自弃", "固执己见", "怨天尤人", "一蹶不振"];
+          fortuneData.career = "事业遇到挑战，需要冷静分析，寻找新的突破口。";
+          fortuneData.wealth = "财运波动，支出增加，建议节俭，避免不必要的开支。";
+          fortuneData.relationship = "人际关系紧张，需要沟通理解，避免冲突。";
+          fortuneData.health = "健康状况需要注意，避免过度劳累，保持良好的生活习惯。";
+          break;
+        case "下下签":
+          fortuneData.summary = "否极泰来终有时，暗尽明至见晨曦，逆旅归途多磨砺，绝处逢生现转机";
+          fortuneData.yi = ["坚定信念", "寻求支持", "积极行动", "保持希望"];
+          fortuneData.ji = ["绝望放弃", "封闭自我", "自怨自艾", "一蹶不振"];
+          fortuneData.career = "事业面临困难，需要重新规划，寻找新的方向。";
+          fortuneData.wealth = "财运低迷，需要开源节流，避免投资风险。";
+          fortuneData.relationship = "人际关系出现危机，需要真诚沟通，重建信任。";
+          fortuneData.health = "健康状况需要关注，建议定期检查，保持良好的生活习惯。";
+          break;
+        default:
+          // 默认数据
+          fortuneData.summary = "东风已至百花开，贵人引路财自来，放手去做莫犹疑，2026属于你的舞台";
+          fortuneData.yi = ["大胆开口", "尝试新领域", "主动社交", "给自己放个假"];
+          fortuneData.ji = ["犹豫不决", "熬夜内耗", "独自硬扛", "跟烂人纠缠"];
+          fortuneData.career = "事业运势高涨，适合大胆尝试新机会，贵人相助，事半功倍。";
+          fortuneData.wealth = "财运亨通，正财稳定，偏财有望，适合理性投资。";
+          fortuneData.relationship = "人际关系和谐，桃花运势佳，适合拓展社交圈。";
+          fortuneData.health = "健康状况良好，情绪稳定，注意劳逸结合。";
+      }
+
+      return fortuneData;
+    }
+
+    // 直接调用 MiniMax API
+    const MINIMAX_API_KEY = 'sk-api-keMydnPwN1GcAQFo3F3aroLRB5yy0X9m_WaaXLJKxaZrdtT4hRrbyWlwn6bxZyAV-kIDnd92GwtQ6e6teh22IwlZcXbRXj0TrqysU5Tkow2iq4xq0FA_jjU';
+
+    async function fetchFortuneFromAPI() {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 30000);
+      try {
+        console.log('直接请求 MiniMax 大模型API数据...');
+
+        const systemPrompt = `你是一位融合传统命理与现代心理学的AI运势解读师。根据以下用户信息，生成一张完整的运势解读卡。
+要求：
+1. 整体基调积极正向，即使是下签也要给出"先苦后甜、否极泰来"的正向解读。
+2. 签文总结要通俗押韵、朗朗上口。
+3. 宜忌标签要具体可执行、不要太泛。
+4. 详细运势解读要结合铭文意象展开，让铭文和解读形成呼应。
+5. 语言风格兼具古风韵味和现代亲切感。
+
+请必须严格按照以下JSON格式返回结果，不要包含任何额外的文本或Markdown标记：
+{
+  "summary": "运势签文总结（20-30字押韵短句）",
+  "yi": ["宜事项1", "宜事项2", "宜事项3", "宜事项4"],
+  "ji": ["忌事项1", "忌事项2", "忌事项3", "忌事项4"],
+  "career": "事业运/学业运解读（2-3句）",
+  "wealth": "财运解读（2-3句）",
+  "relationship": "人际/桃花运解读（2-3句）",
+  "health": "情绪/健康运解读（2-3句）"
+}`;
+
+        const userPrompt = `用户信息：\n昵称：${params.name || '有缘人'}\n生肖：${params.zodiac || '龙'}\n年龄段：${params.age || '90后'}\n签型：${params.signType || '上上签'}\n签面铭文：${params.inscription || '紫气东来'}\n请生成运势解读。`;
+
+        const response = await fetch(
+          'https://api.minimax.chat/v1/text/chatcompletion_v2',
+          {
+            method: 'POST',
+            signal: controller.signal,
+            headers: {
+              'Authorization': `Bearer ${MINIMAX_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: 'abab6.5s-chat',
+              messages: [
+                { role: 'system', name: 'system', content: systemPrompt },
+                { role: 'user', name: 'user', content: userPrompt }
+              ]
+            })
+          }
+        );
+
+        clearTimeout(timer);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const resultData = await response.json();
+        let content = resultData.choices[0].message.content;
+        content = content.replace(/```json/g, '').replace(/```/g, '').trim();
+        return JSON.parse(content);
+
+      } catch (error) {
+        clearTimeout(timer);
+        console.error('MiniMax API调用失败:', error);
+        return null;
+      }
+    }
+
+    // 模拟加载过程
+    async function simulateLoading() {
+      // 先尝试调用API
+      let fortuneData = await fetchFortuneFromAPI();
+      
+      // 如果API调用失败，使用兜底数据
+      if (!fortuneData || fortuneData.error) {
+        if (fortuneData && fortuneData.error) {
+          console.warn('API返回错误:', fortuneData.error);
+        }
+        console.log('使用兜底数据');
+        fortuneData = generateFortuneData();
+      }
+      
+      // 模拟加载延迟 (如果API太快，保证至少有一定加载时间体验)
+      setTimeout(() => {
+        // 将运势数据转换为URL参数
+        const fortuneDataStr = encodeURIComponent(JSON.stringify(fortuneData));
+        // 跳转到结果页
+        window.location.href = `result.html?fortune=${fortuneDataStr}&name=${encodeURIComponent(params.name)}&zodiac=${encodeURIComponent(params.zodiac)}&age=${encodeURIComponent(params.age)}&signType=${encodeURIComponent(params.signType)}&inscription=${encodeURIComponent(params.inscription)}`;
+      }, 1000); // 至少1秒加载时间
+    }
+
+    // 页面加载完成后开始模拟加载
+    window.addEventListener('DOMContentLoaded', simulateLoading);
+  </script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>输入信息</title>
+  <style>
+    :root { --on-background:#e5e2e1; --on-secondary-fixed:#221b00; --outline:#aa8987; --on-primary-container:#fff9f9; --background:#0a0a0a; --primary-container:#d4393c; --surface-variant:#353534; --secondary-container:#f5d36e; --primary:#d4393c; --font-stack:system-ui,"PingFang SC","Microsoft YaHei",sans-serif; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; padding:0; background:var(--background); }
+    body { position:relative; display:flex; flex-direction:column; max-width:430px; margin:0 auto; min-height:100vh; color:var(--on-background); overflow-x:hidden; font-family:var(--font-stack); }
+    ::selection { background:var(--primary-container); color:var(--on-primary-container); }
+
+    .页面主内容 { position:relative; z-index:10; flex-grow:1; padding:1rem 1.5rem 6rem; }
+    .粒子容器 { position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; max-width:430px; height:100%; z-index:0; pointer-events:none; }
+    .粒子 { position:absolute; border-radius:9999px; }
+    .粒子小 { width:4px; height:4px; }
+    .粒子大 { width:6px; height:6px; }
+    .主色粒子 { background:var(--primary); }
+    .辅色粒子 { background:var(--secondary-container); }
+    .p1 { top:15%; left:20%; } .p2 { top:40%; left:10%; } .p3 { top:80%; left:30%; } .p4 { top:25%; right:15%; }
+    .p5 { top:60%; right:20%; } .p6 { top:10%; right:40%; } .p7 { right:10%; bottom:15%; } .p8 { right:45%; bottom:40%; }
+    .p9 { top:5%; left:45%; } .p10 { top:50%; left:50%; } .p11 { bottom:20%; left:5%; } .p12 { top:70%; left:15%; }
+
+    .返回按钮 { position:absolute; top:1rem; left:1rem; width:40px; height:40px; border-radius:50%; border:1px solid rgba(245,211,110,.3); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .3s; background:var(--background); z-index:20; }
+    .返回按钮:hover { border-color:var(--secondary-container); box-shadow:0 0 10px rgba(245,211,110,.2); }
+    .返回按钮 svg { width:20px; height:20px; fill:var(--secondary-container); }
+
+    .顶部标签 { display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:4rem; margin-bottom:2rem; }
+    .标签线 { width:3rem; height:1px; }
+    .标签线.左 { background:linear-gradient(to right,transparent,var(--secondary-container)); }
+    .标签线.右 { background:linear-gradient(to left,transparent,var(--secondary-container)); }
+    .标签文案 { color:var(--secondary-container); font-size:.75rem; font-weight:700; letter-spacing:.6em; font-family:var(--font-stack); }
+
+    .主标题 { margin:0 0 2rem; color:#fff; font-size:1.5rem; font-weight:700; letter-spacing:-.02em; text-align:center; font-family:var(--font-stack); }
+
+    .表单 { display:flex; flex-direction:column; gap:1.5rem; }
+    .表单项 { display:flex; flex-direction:column; gap:.5rem; }
+    .表单项 label { color:var(--on-background); font-size:.875rem; font-weight:500; font-family:var(--font-stack); }
+    .表单项 input,
+    .表单项 select {
+      padding:.75rem 1rem;
+      border:1px solid rgba(245,211,110,.3);
+      border-radius:12px;
+      background:var(--surface-variant);
+      color:var(--on-background);
+      font-size:.875rem;
+      font-family:var(--font-stack);
+      transition:all .3s;
+    }
+    .表单项 input:focus,
+    .表单项 select:focus {
+      outline:none;
+      border-color:var(--secondary-container);
+      box-shadow:0 0 10px rgba(245,211,110,.2);
+    }
+    .表单项 input::placeholder {
+      color:var(--outline);
+    }
+
+    .按钮容器 { margin-top:3rem; }
+    .占卜按钮 { width:100%; height:48px; border-radius:24px; border:1.5px solid var(--secondary-container); background:transparent; color:var(--secondary-container); font-size:.875rem; letter-spacing:.2em; text-transform:uppercase; font-family:var(--font-stack); cursor:pointer; transition:all .3s; }
+    .占卜按钮:hover { background:var(--secondary-container); color:var(--on-secondary-fixed); }
+    .占卜按钮:active { transform:scale(.95); }
+    .占卜按钮:disabled { cursor:not-allowed; opacity:.9; }
+
+    .页脚 { margin-top:auto; padding:0 1.5rem 6rem; text-align:center; }
+    .页脚文案 { margin:0; color:var(--surface-variant); font-size:10px; letter-spacing:.2em; text-transform:uppercase; font-family:var(--font-stack); }
+
+    .pulse-glow { animation:pulse 3s ease-in-out infinite; transition:box-shadow .6s ease; }
+
+    @keyframes pulse { 0%,100% { opacity:.3; transform:scale(1); } 50% { opacity:.8; transform:scale(1.2); } }
+  </style>
+</head>
+<body>
+  <!-- 环境粒子背景 -->
+  <div id="particle-container" class="粒子容器">
+    <div class="粒子 粒子小 主色粒子 p1 pulse-glow" style="box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子大 辅色粒子 p2 pulse-glow" style="animation-delay:1s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子小 辅色粒子 p3 pulse-glow" style="animation-delay:2s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子大 主色粒子 p4 pulse-glow" style="animation-delay:.5s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子小 辅色粒子 p5 pulse-glow" style="animation-delay:1.5s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子大 主色粒子 p6 pulse-glow" style="animation-delay:2.5s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子小 主色粒子 p7 pulse-glow" style="animation-delay:1.2s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子小 辅色粒子 p8 pulse-glow" style="animation-delay:1.8s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子大 主色粒子 p9 pulse-glow" style="animation-delay:.3s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子小 辅色粒子 p10 pulse-glow" style="animation-delay:2.2s; box-shadow:0 0 8px #F5D36E;"></div>
+    <div class="粒子 粒子小 主色粒子 p11 pulse-glow" style="animation-delay:.7s; box-shadow:0 0 8px #D4393C;"></div>
+    <div class="粒子 粒子大 辅色粒子 p12 pulse-glow" style="animation-delay:1.1s; box-shadow:0 0 8px #F5D36E;"></div>
+  </div>
+
+  <!-- 主体内容 -->
+  <main class="页面主内容">
+    <button id="back-btn" class="返回按钮">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="顶部标签">
+      <div class="标签线 左"></div>
+      <span class="标签文案">赛博国风</span>
+      <div class="标签线 右"></div>
+    </div>
+
+    <h2 class="主标题">填写信息</h2>
+
+    <form id="info-form" class="表单">
+      <div class="表单项">
+        <label for="name">姓名</label>
+        <input type="text" id="name" name="name" placeholder="请输入姓名" required />
+      </div>
+      
+      <div class="表单项">
+        <label for="zodiac">生肖</label>
+        <select id="zodiac" name="zodiac" required>
+          <option value="">请选择生肖</option>
+          <option value="鼠">鼠</option>
+          <option value="牛">牛</option>
+          <option value="虎">虎</option>
+          <option value="兔">兔</option>
+          <option value="龙">龙</option>
+          <option value="蛇">蛇</option>
+          <option value="马">马</option>
+          <option value="羊">羊</option>
+          <option value="猴">猴</option>
+          <option value="鸡">鸡</option>
+          <option value="狗">狗</option>
+          <option value="猪">猪</option>
+        </select>
+      </div>
+      
+      <div class="表单项">
+        <label for="age">年龄段</label>
+        <select id="age" name="age" required>
+          <option value="">请选择年龄段</option>
+          <option value="00后">00后</option>
+          <option value="95后">95后</option>
+          <option value="90后">90后</option>
+          <option value="85后">85后</option>
+          <option value="80后及以上">80后及以上</option>
+        </select>
+      </div>
+      
+      <div class="表单项">
+        <label for="signType">签型</label>
+        <select id="signType" name="signType" required>
+          <option value="">请选择签型</option>
+          <option value="上上签">上上签（大吉）</option>
+          <option value="上签">上签（吉）</option>
+          <option value="中签">中签（平）</option>
+          <option value="下签">下签（小凶化吉）</option>
+          <option value="下下签">下下签（否极泰来）</option>
+        </select>
+      </div>
+      
+      <div class="表单项">
+        <label for="inscription">铭文</label>
+        <select id="inscription" name="inscription" required>
+          <option value="">请选择铭文</option>
+        </select>
+      </div>
+    </form>
+
+    <div class="按钮容器">
+      <button id="submit-btn" class="占卜按钮">开始占卜</button>
+    </div>
+  </main>
+
+  <!-- 页脚信息 -->
+  <footer class="页脚">
+    <p class="页脚文案">仅供娱乐 · 祝你开麦大吉</p>
+  </footer>
+
+  <script>
+    const backBtn = document.getElementById('back-btn');
+    const form = document.getElementById('info-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const signTypeSelect = document.getElementById('signType');
+    const inscriptionSelect = document.getElementById('inscription');
+
+    // 铭文库数据
+    const inscriptionLibrary = {
+      '上上签': ['紫气东来', '凤鸣九霄', '星河入梦', '金榜题名', '春风得意', '万事如意', '吉星高照', '福如东海'],
+      '上签': ['春山可望', '清风自来', '云开月明', '花开富贵', '福星临门', '心想事成', '吉祥如意', '前程似锦'],
+      '中签': ['静水流深', '守拙安然', '雾散花开', '平步青云', '稳中求进', '知足常乐', '和气生财', '平安是福'],
+      '下签': ['破茧重生', '风雨兼程', '淬火成金', '化险为夷', '柳暗花明', '否极泰来', '苦尽甘来', '峰回路转'],
+      '下下签': ['否极泰来', '暗尽明至', '逆旅归途', '绝处逢生', '枯木逢春', '时来运转', '转危为安', '遇难成祥']
+    };
+
+    // 根据签型更新铭文选项
+    function updateInscriptionOptions() {
+      const selectedSignType = signTypeSelect.value;
+      inscriptionSelect.innerHTML = '<option value="">请选择铭文</option>';
+      
+      if (selectedSignType && inscriptionLibrary[selectedSignType]) {
+        inscriptionLibrary[selectedSignType].forEach(inscription => {
+          const option = document.createElement('option');
+          option.value = inscription;
+          option.textContent = inscription;
+          inscriptionSelect.appendChild(option);
+        });
+      }
+    }
+
+    // 监听签型变化
+    signTypeSelect.addEventListener('change', updateInscriptionOptions);
+
+    backBtn.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    submitBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      
+      if (!data.name || !data.zodiac || !data.age || !data.signType || !data.inscription) {
+        alert('请填写所有必填项');
+        return;
+      }
+
+      // 跳转到加载页
+      window.location.href = `loading.html?name=${encodeURIComponent(data.name)}&zodiac=${encodeURIComponent(data.zodiac)}&age=${encodeURIComponent(data.age)}&signType=${encodeURIComponent(data.signType)}&inscription=${encodeURIComponent(data.inscription)}`;
+    });
+  </script>
+</body>
+</html>
