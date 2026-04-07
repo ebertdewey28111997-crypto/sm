@@ -23,9 +23,8 @@
     .p5 { top:60%; right:20%; } .p6 { top:10%; right:40%; } .p7 { right:10%; bottom:15%; } .p8 { right:45%; bottom:40%; }
     .p9 { top:5%; left:45%; } .p10 { top:50%; left:50%; } .p11 { bottom:20%; left:5%; } .p12 { top:70%; left:15%; }
 
-    .返回按钮 { position:absolute; top:1rem; left:1rem; width:40px; height:40px; border-radius:50%; border:1px solid rgba(245,211,110,.3); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .3s; background:var(--background); z-index:20; }
-    .返回按钮:hover { border-color:var(--secondary-container); box-shadow:0 0 10px rgba(245,211,110,.2); }
-    .返回按钮 svg { width:20px; height:20px; fill:var(--secondary-container); }
+    .返回按钮 { position:absolute; top:1.5rem; left:1rem; width:40px; height:40px; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .3s; background:transparent; z-index:20; color:var(--secondary-container); font-size:1.5rem; font-weight:300; }
+    .返回按钮:hover { transform:translateX(-3px); text-shadow:0 0 10px rgba(245,211,110,.5); }
 
     .顶部标签 { display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:4rem; margin-bottom:2rem; }
     .标签线 { width:3rem; height:1px; }
@@ -76,6 +75,13 @@
 
     .pulse-glow { animation:pulse 3s ease-in-out infinite; transition:box-shadow .6s ease; }
 
+    /* 生成图片预览弹窗（兼容微信保存） */
+    .图片预览遮罩 { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; padding:2rem; backdrop-filter:blur(5px); }
+    .图片预览遮罩.显示 { opacity:1; pointer-events:auto; }
+    .图片预览遮罩 img { max-width:100%; max-height:75vh; border-radius:12px; box-shadow:0 0 30px rgba(245,211,110,.3); object-fit:contain; }
+    .保存提示文案 { color:var(--secondary-container); font-size:1rem; margin-top:1.5rem; letter-spacing:0.1em; font-family:var(--font-stack); text-align:center; animation:pulse 2s infinite; }
+    .关闭预览按钮 { position:absolute; top:2rem; right:2rem; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.1); color:#fff; border:none; font-size:1.5rem; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+
     @keyframes pulse { 0%,100% { opacity:.3; transform:scale(1); } 50% { opacity:.8; transform:scale(1.2); } }
   </style>
 </head>
@@ -98,15 +104,13 @@
 
   <!-- 主体内容 -->
   <main class="页面主内容">
-    <button id="back-btn" class="返回按钮">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <button id="back-btn" class="返回按钮" aria-label="返回上一页" style="display: none;">
+      &lt;
     </button>
 
     <div class="顶部标签">
-      <div class="标签线 左"></div>
-      <span class="标签文案">赛博国风</span>
+      <div class=yongyong"></div>
+      <span class="标签文案">凡星永恒-运势闪耀</span>
       <div class="标签线 右"></div>
     </div>
 
@@ -166,11 +170,6 @@
       </div>
     </div>
 
-    <!-- 卡片底部 -->
-    <div class="卡片底部">
-      <p class="底部文案">仅供娱乐 · AI生成内容</p>
-    </div>
-
     <!-- 按钮容器 -->
     <div class="按钮容器">
       <button id="save-btn" class="按钮">保存图片</button>
@@ -183,6 +182,13 @@
   <footer class="页脚">
     <p class="页脚文案">仅供娱乐 · 祝你开麦大吉</p>
   </footer>
+
+  <!-- 图片预览遮罩（解决微信无法保存问题） -->
+  <div id="image-preview-modal" class="图片预览遮罩">
+    <button class="关闭预览按钮" id="close-preview-btn">×</button>
+    <img id="preview-image" src="" alt="运势卡片" />
+    <p class="保存提示文案">👇 长按上方图片即可保存 👇</p>
+  </div>
 
   <script>
     // 获取URL参数
@@ -242,32 +248,59 @@
       document.getElementById('health-fortune').textContent = fortune.health;
     }
 
-    // 保存图片功能
+    // 保存图片功能（兼容微信环境）
     document.getElementById('save-btn').addEventListener('click', async () => {
+      const saveBtn = document.getElementById('save-btn');
+      const originalText = saveBtn.textContent;
+      
       try {
+        // 更改按钮状态，防止重复点击
+        saveBtn.textContent = '正在生成...';
+        saveBtn.disabled = true;
+
+        // 截图前隐藏页面底部的按钮区域，避免被截入图片
+        const btnContainer = document.querySelector('.按钮容器');
+        btnContainer.style.display = 'none';
+
         // 选择要截图的元素
         const fortuneCard = document.querySelector('.页面主内容');
         
         // 使用html2canvas生成图片
         const canvas = await html2canvas(fortuneCard, {
           backgroundColor: '#0a0a0a',
-          scale: 2, // 提高图片质量
+          scale: window.devicePixelRatio || 2, // 提高图片质量适配高分屏
           logging: false,
           useCORS: true
         });
         
+        // 截图完成后恢复按钮区域
+        btnContainer.style.display = 'flex';
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
+
         // 将canvas转换为图片URL
         const image = canvas.toDataURL('image/png');
         
-        // 创建下载链接
-        const link = document.createElement('a');
-        link.download = `赛博运势-${params.signType}-${params.inscription}.png`;
-        link.href = image;
-        link.click();
+        // 弹出遮罩层，展示图片让用户长按保存
+        const modal = document.getElementById('image-preview-modal');
+        const previewImg = document.getElementById('preview-image');
+        previewImg.src = image;
+        modal.classList.add('显示');
+
       } catch (error) {
         console.error('保存图片失败:', error);
         alert('保存图片失败，请稍后重试');
+        
+        // 出错时也要恢复按钮状态
+        document.querySelector('.按钮容器').style.display = 'flex';
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
       }
+    });
+
+    // 关闭预览遮罩
+    document.getElementById('close-preview-btn').addEventListener('click', () => {
+      document.getElementById('image-preview-modal').classList.remove('显示');
     });
 
     // 分享功能

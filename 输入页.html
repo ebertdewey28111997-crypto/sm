@@ -22,9 +22,8 @@
     .p5 { top:60%; right:20%; } .p6 { top:10%; right:40%; } .p7 { right:10%; bottom:15%; } .p8 { right:45%; bottom:40%; }
     .p9 { top:5%; left:45%; } .p10 { top:50%; left:50%; } .p11 { bottom:20%; left:5%; } .p12 { top:70%; left:15%; }
 
-    .返回按钮 { position:absolute; top:1rem; left:1rem; width:40px; height:40px; border-radius:50%; border:1px solid rgba(245,211,110,.3); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .3s; background:var(--background); z-index:20; }
-    .返回按钮:hover { border-color:var(--secondary-container); box-shadow:0 0 10px rgba(245,211,110,.2); }
-    .返回按钮 svg { width:20px; height:20px; fill:var(--secondary-container); }
+    .返回按钮 { position:absolute; top:1.5rem; left:1rem; width:40px; height:40px; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .3s; background:transparent; z-index:20; color:var(--secondary-container); font-size:1.5rem; font-weight:300; }
+    .返回按钮:hover { transform:translateX(-3px); text-shadow:0 0 10px rgba(245,211,110,.5); }
 
     .顶部标签 { display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:4rem; margin-bottom:2rem; }
     .标签线 { width:3rem; height:1px; }
@@ -91,10 +90,8 @@
 
   <!-- 主体内容 -->
   <main class="页面主内容">
-    <button id="back-btn" class="返回按钮">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <button id="back-btn" class="返回按钮" aria-label="返回上一页">
+      &lt;
     </button>
 
     <div class="顶部标签">
