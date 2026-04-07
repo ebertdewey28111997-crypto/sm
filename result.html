@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>运势结果</title>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <style>
     :root { --on-background:#e5e2e1; --on-secondary-fixed:#221b00; --outline:#aa8987; --on-primary-container:#fff9f9; --background:#0a0a0a; --primary-container:#d4393c; --surface-variant:#353534; --secondary-container:#f5d36e; --primary:#d4393c; --font-stack:system-ui,"PingFang SC","Microsoft YaHei",sans-serif; }
     * { box-sizing:border-box; }
@@ -75,53 +75,9 @@
 
     .pulse-glow { animation:pulse 3s ease-in-out infinite; transition:box-shadow .6s ease; }
 
-    /* 生成图片预览弹窗（兼容微信保存） */
-    .图片预览遮罩 { position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; overflow-y:auto; opacity:0; pointer-events:none; transition:opacity 0.3s; padding:3.5rem 1.5rem 2rem; }
-    .图片预览遮罩.显示 { opacity:1; pointer-events:auto; }
-    .图片预览遮罩 img { 
-      width:100%; 
-      max-width:380px;
-      height:auto;
-      border-radius:12px; 
-      box-shadow:0 0 30px rgba(245,211,110,.3); 
-      display:block;
-      /* 强制开启 iOS 和 微信 的长按保存菜单 */
-      -webkit-touch-callout: default !important;
-      -webkit-user-select: auto !important;
-      user-select: auto !important;
-      pointer-events: auto !important;
-    }
-    .保存提示文案 { color:var(--secondary-container); font-size:.9rem; margin-top:1rem; letter-spacing:0.1em; font-family:var(--font-stack); text-align:center; }
-    .关闭预览按钮 { position:fixed; top:1rem; right:1rem; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.15); color:#fff; border:none; font-size:1.5rem; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:101; }
-
-    /* 截图专用卡片（隐藏在页面外，仅用于 html2canvas） */
-    .截图卡片 {
-      position: fixed;
-      left: -9999px;
-      top: 0;
-      width: 375px;
-      background: #0a0a0a;
-      padding: 2rem 1.5rem;
-      font-family: system-ui,"PingFang SC","Microsoft YaHei",sans-serif;
-      color: #e5e2e1;
-    }
-    .截图卡片 .截图签头 { background:linear-gradient(135deg,rgba(212,57,60,.25),rgba(245,211,110,.25)); border:1px solid rgba(245,211,110,.4); border-radius:16px; padding:1.5rem; margin-bottom:1rem; text-align:center; }
-    .截图卡片 .截图签型 { font-size:1.5rem; font-weight:700; color:#f5d36e; margin:0 0 .5rem; letter-spacing:.2em; }
-    .截图卡片 .截图铭文 { font-size:1.1rem; color:#e5e2e1; margin:0; letter-spacing:.1em; }
-    .截图卡片 .截图总结 { background:#353534; border:1px solid rgba(245,211,110,.15); border-radius:12px; padding:1.2rem; margin-bottom:1rem; text-align:center; }
-    .截图卡片 .截图总结标题 { color:#f5d36e; font-size:.85rem; font-weight:700; letter-spacing:.1em; margin:0 0 .5rem; }
-    .截图卡片 .截图总结内容 { color:#e5e2e1; font-size:.9rem; line-height:1.6; margin:0; font-style:italic; }
-    .截图卡片 .截图宜忌 { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-bottom:1rem; }
-    .截图卡片 .截图宜忌项 { background:#353534; border:1px solid rgba(245,211,110,.1); border-radius:10px; padding:1rem; }
-    .截图卡片 .截图宜忌标题 { color:#f5d36e; font-size:.8rem; font-weight:700; margin:0 0 .5rem; }
-    .截图卡片 .截图宜忌列表 { margin:0; padding:0; list-style:none; }
-    .截图卡片 .截图宜忌列表 li { font-size:.78rem; color:#e5e2e1; line-height:1.5; margin-bottom:.25rem; }
-    .截图卡片 .截图维度列表 { margin-bottom:1rem; }
-    .截图卡片 .截图维度项 { background:#353534; border:1px solid rgba(245,211,110,.1); border-radius:10px; padding:1rem; margin-bottom:.5rem; }
-    .截图卡片 .截图维度标题 { color:#f5d36e; font-size:.8rem; font-weight:700; margin:0 0 .3rem; }
-    .截图卡片 .截图维度内容 { color:#e5e2e1; font-size:.78rem; line-height:1.4; margin:0; }
-    .截图卡片 .截图底部 { text-align:center; padding-top:.75rem; border-top:1px solid rgba(245,211,110,.15); }
-    .截图卡片 .截图底部文案 { color:#555; font-size:.7rem; letter-spacing:.2em; margin:0; }
+    /* 复制成功提示 */
+    .复制提示 { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(20px); background:var(--secondary-container); color:var(--on-secondary-fixed); padding:.6rem 1.5rem; border-radius:24px; font-size:.85rem; font-family:var(--font-stack); font-weight:600; letter-spacing:.05em; opacity:0; transition:all .3s; pointer-events:none; white-space:nowrap; z-index:200; }
+    .复制提示.显示 { opacity:1; transform:translateX(-50%) translateY(0); }
 
     @keyframes pulse { 0%,100% { opacity:.3; transform:scale(1); } 50% { opacity:.8; transform:scale(1.2); } }
   </style>
@@ -150,7 +106,7 @@
     </button>
 
     <div class="顶部标签">
-      <div class=yongyong"></div>
+      <div class="标签线 左"></div>
       <span class="标签文案">凡星永恒-运势闪耀</span>
       <div class="标签线 右"></div>
     </div>
@@ -213,8 +169,7 @@
 
     <!-- 按钮容器 -->
     <div class="按钮容器">
-      <button id="save-btn" class="按钮">保存图片</button>
-      <button id="share-btn" class="按钮">分享</button>
+      <button id="share-btn" class="按钮">分享链接</button>
       <button id="restart-btn" class="按钮">重新占卜</button>
     </div>
   </main>
@@ -224,43 +179,8 @@
     <p class="页脚文案">仅供娱乐 · 祝你开麦大吉</p>
   </footer>
 
-  <!-- 图片预览遮罩（解决微信无法保存问题） -->
-  <div id="image-preview-modal" class="图片预览遮罩">
-    <button class="关闭预览按钮" id="close-preview-btn">×</button>
-    <img id="preview-image" src="" alt="运势卡片" />
-    <p class="保存提示文案">👆 长按图片即可保存到相册 👆</p>
-  </div>
-
-  <!-- 截图专用卡片（offscreen，仅 html2canvas 使用） -->
-  <div id="screenshot-card" class="截图卡片">
-    <div class="截图签头">
-      <p class="截图签型" id="sc-sign-type"></p>
-      <p class="截图铭文" id="sc-inscription"></p>
-    </div>
-    <div class="截图总结">
-      <p class="截图总结标题">运势签文</p>
-      <p class="截图总结内容" id="sc-summary"></p>
-    </div>
-    <div class="截图宜忌">
-      <div class="截图宜忌项">
-        <p class="截图宜忌标题">宜</p>
-        <ul class="截图宜忌列表" id="sc-yi"></ul>
-      </div>
-      <div class="截图宜忌项">
-        <p class="截图宜忌标题">忌</p>
-        <ul class="截图宜忌列表" id="sc-ji"></ul>
-      </div>
-    </div>
-    <div class="截图维度列表">
-      <div class="截图维度项"><p class="截图维度标题">事业运</p><p class="截图维度内容" id="sc-career"></p></div>
-      <div class="截图维度项"><p class="截图维度标题">财运</p><p class="截图维度内容" id="sc-wealth"></p></div>
-      <div class="截图维度项"><p class="截图维度标题">人际/桃花运</p><p class="截图维度内容" id="sc-relationship"></p></div>
-      <div class="截图维度项"><p class="截图维度标题">健康/情绪运</p><p class="截图维度内容" id="sc-health"></p></div>
-    </div>
-    <div class="截图底部">
-      <p class="截图底部文案">凡星永恒 · 赛博运势 · 仅供娱乐</p>
-    </div>
-  </div>
+  <!-- 复制成功提示 -->
+  <div id="copy-toast" class="复制提示">链接已复制，快去分享吧！</div>
 
   <script>
     // 获取URL参数
@@ -320,102 +240,32 @@
       document.getElementById('health-fortune').textContent = fortune.health;
     }
 
-    // 填充截图卡片内容
-    function fillScreenshotCard(fortune) {
-      document.getElementById('sc-sign-type').textContent = fortune.signType;
-      document.getElementById('sc-inscription').textContent = fortune.inscription;
-      document.getElementById('sc-summary').textContent = fortune.summary;
-      document.getElementById('sc-career').textContent = fortune.career;
-      document.getElementById('sc-wealth').textContent = fortune.wealth;
-      document.getElementById('sc-relationship').textContent = fortune.relationship;
-      document.getElementById('sc-health').textContent = fortune.health;
-
-      const scYi = document.getElementById('sc-yi');
-      scYi.innerHTML = '';
-      fortune.yi.forEach(item => { const li = document.createElement('li'); li.textContent = item; scYi.appendChild(li); });
-
-      const scJi = document.getElementById('sc-ji');
-      scJi.innerHTML = '';
-      fortune.ji.forEach(item => { const li = document.createElement('li'); li.textContent = item; scJi.appendChild(li); });
+    // 分享功能：复制链接到剪贴板
+    function showToast() {
+      const toast = document.getElementById('copy-toast');
+      toast.classList.add('显示');
+      setTimeout(() => toast.classList.remove('显示'), 2500);
     }
 
-    // 保存图片功能（移动端/微信终极适配版）
-    document.getElementById('save-btn').addEventListener('click', async () => {
-      const saveBtn = document.getElementById('save-btn');
-      const originalText = saveBtn.textContent;
-      
-      try {
-        saveBtn.textContent = '正在生成...';
-        saveBtn.disabled = true;
-
-        // 截图专用卡片移到屏幕外但保持可渲染（不能 display:none）
-        const card = document.getElementById('screenshot-card');
-        card.style.left = '-9999px';
-        card.style.top = '0';
-        card.style.position = 'fixed';
-        card.style.visibility = 'visible';
-
-        // 等待一帧让浏览器完成布局
-        await new Promise(resolve => setTimeout(resolve, 150));
-
-        // 对固定尺寸的截图卡片进行截图，避免页面高度过大导致内存溢出
-        const canvas = await html2canvas(card, {
-          backgroundColor: '#0a0a0a',
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          width: card.offsetWidth,
-          height: card.offsetHeight,
-          windowWidth: card.offsetWidth,
-          logging: false
-        });
-
-        // 转为 JPEG（减小体积，防止微信 WebView 崩溃）
-        const image = canvas.toDataURL('image/jpeg', 0.92);
-
-        // 弹出预览遮罩，供用户长按保存
-        const modal = document.getElementById('image-preview-modal');
-        const previewImg = document.getElementById('preview-image');
-        previewImg.src = image;
-        modal.classList.add('显示');
-        
-        saveBtn.textContent = originalText;
-        saveBtn.disabled = false;
-
-      } catch (error) {
-        console.error('保存图片失败:', error);
-        alert('生成图片失败，请截屏保存');
-        saveBtn.textContent = originalText;
-        saveBtn.disabled = false;
-      }
-    });
-
-    // 关闭预览遮罩
-    document.getElementById('close-preview-btn').addEventListener('click', () => {
-      document.getElementById('image-preview-modal').classList.remove('显示');
-    });
-
-    // 分享功能
     document.getElementById('share-btn').addEventListener('click', () => {
-      if (navigator.share) {
-        navigator.share({
-          title: '我的赛博运势',
-          text: `我的${params.signType}，铭文：${params.inscription}，快来看看你的运势吧！`,
-          url: window.location.href
-        }).catch(err => {
-          console.error('分享失败:', err);
-          alert('分享失败，请手动分享链接');
-        });
+      const url = window.location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(showToast).catch(() => fallbackCopy(url));
       } else {
-        // 复制链接到剪贴板
-        navigator.clipboard.writeText(window.location.href).then(() => {
-          alert('链接已复制到剪贴板，请手动分享');
-        }).catch(err => {
-          console.error('复制失败:', err);
-          alert('复制失败，请手动复制链接');
-        });
+        fallbackCopy(url);
       }
     });
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); showToast(); } catch(e) { alert('请手动复制链接：' + text); }
+      document.body.removeChild(ta);
+    }
 
     // 重新占卜
     document.getElementById('restart-btn').addEventListener('click', () => {
@@ -448,7 +298,6 @@
         }
       }
       renderFortune(fortuneData);
-      fillScreenshotCard(fortuneData);
     });
   </script>
 </body>
