@@ -109,9 +109,9 @@
       // 根据签型生成不同的运势数据
       const fortuneData = {
         name: params.name || "有缘人",
-        zodiac: params.zodiac || "龙",
-        signType: params.signType || "上上签",
-        inscription: params.inscription || "紫气东来",
+        birthDate: params.birthDate || "2000年1月1日",
+        signType: params.signType || "天赐签｜上上",
+        inscription: params.inscription || "承天纳吉",
         summary: "",
         yi: [],
         ji: [],
@@ -123,46 +123,46 @@
 
       // 根据签型生成对应的运势内容
       switch (params.signType) {
-        case "上上签":
+        case "天赐签｜上上":
           fortuneData.summary = "东风已至百花开，贵人引路财自来，放手去做莫犹疑，2026属于你的舞台";
-          fortuneData.yi = ["大胆开口", "尝试新领域", "主动社交", "给自己放个假"];
-          fortuneData.ji = ["犹豫不决", "熬夜内耗", "独自硬扛", "跟烂人纠缠"];
+          fortuneData.yi = ["纳财：会有意想不到的奖金或偏财入账", "祈福：心诚则灵，宜默默许下事业宏愿", "交易：签合同或谈大单的成功率极高", "开市：适合开启新项目或新业务"];
+          fortuneData.ji = ["动土：近期不宜搬家或大规模装修", "安葬：避免参与负能量较重的场合", "破土：切勿轻易打破现有的稳定局面", "作灶：注意饮食规律，切忌暴饮暴食"];
           fortuneData.career = "事业运势高涨，适合大胆尝试新机会，贵人相助，事半功倍。";
           fortuneData.wealth = "财运亨通，正财稳定，偏财有望，适合理性投资。";
           fortuneData.relationship = "人际关系和谐，桃花运势佳，适合拓展社交圈。";
           fortuneData.health = "健康状况良好，情绪稳定，注意劳逸结合。";
           break;
-        case "上签":
+        case "狂飙签｜上签":
           fortuneData.summary = "春山可望路迢迢，清风送爽自逍遥，心有定见无烦恼，万事顺遂乐陶陶";
-          fortuneData.yi = ["保持乐观", "适度投资", "学习新技能", "多与朋友交流"];
-          fortuneData.ji = ["过度焦虑", "冲动消费", "闭门造车", "与人争执"];
+          fortuneData.yi = ["出行：外出跑业务能遇贵人", "立券：签署重要文件会带来长远利益", "解除：适合化解之前的职场误会", "求医：保养身体的好时机，宜预约体检"];
+          fortuneData.ji = ["伐木：切忌强行推进不成熟的方案", "掘井：不要在没有把握的领域过度深挖", "词讼：避免与同事或客户发生正面冲突", "入殓：远离内耗人群，保持心情舒畅"];
           fortuneData.career = "事业平稳发展，有小幅度提升，注意抓住身边的机会。";
           fortuneData.wealth = "财运平稳，正财为主，偏财机会较少，建议稳健理财。";
           fortuneData.relationship = "人际关系良好，有新的社交机会，注意维系旧友。";
           fortuneData.health = "健康状况稳定，注意饮食均衡，适当运动。";
           break;
-        case "中签":
+        case "暴涨签｜中签":
           fortuneData.summary = "静水流深自在行，守拙安然心自明，平步青云需努力，知足常乐是真经";
-          fortuneData.yi = ["脚踏实地", "专注当下", "学习沉淀", "保持平衡"];
-          fortuneData.ji = ["好高骛远", "急功近利", "与人攀比", "消极抱怨"];
+          fortuneData.yi = ["祭祀：宜心怀感恩，感谢帮助过你的人", "会友：下班后和老朋友聚餐能带来新灵感", "入学：适合报班学习，精进专业技能", "扫舍：整理办公桌，清理过期文件能带来好运"];
+          fortuneData.ji = ["修造：不宜对现有项目进行推倒重来", "移徙：暂不适合跳槽或更换部门", "纳采：在重要的人际关系推进上需再等等", "出行：尽量减少不必要的长途出差"];
           fortuneData.career = "事业发展平稳，需要更多努力和耐心，稳步前进。";
           fortuneData.wealth = "财运普通，收入稳定，支出合理，建议储蓄为主。";
           fortuneData.relationship = "人际关系一般，需要主动维护，避免不必要的冲突。";
           fortuneData.health = "健康状况一般，注意休息，避免过度劳累。";
           break;
-        case "下签":
+        case "入心签｜下签":
           fortuneData.summary = "破茧重生需忍耐，风雨兼程莫徘徊，淬火成金终有时，否极泰来笑口开";
-          fortuneData.yi = ["保持坚韧", "寻求帮助", "学习反思", "调整心态"];
-          fortuneData.ji = ["自暴自弃", "固执己见", "怨天尤人", "一蹶不振"];
+          fortuneData.yi = ["修饰：换个新发型或新穿搭，转换心情", "沐浴：下班泡个热水澡，洗去一身班味", "平治：理清手头乱如麻的工作线索", "余事勿取：今日只做分内事，不宜多管闲事"];
+          fortuneData.ji = ["诸事不宜：遇到重大决策请缓一缓", "祈福：不要把希望寄托在虚无的运气上", "嫁娶：避免轻易对别人许下长期承诺", "安葬：过去的失败就让它过去，不要反复咀嚼"];
           fortuneData.career = "事业遇到挑战，需要冷静分析，寻找新的突破口。";
           fortuneData.wealth = "财运波动，支出增加，建议节俭，避免不必要的开支。";
           fortuneData.relationship = "人际关系紧张，需要沟通理解，避免冲突。";
           fortuneData.health = "健康状况需要注意，避免过度劳累，保持良好的生活习惯。";
           break;
-        case "下下签":
+        case "蓄力签｜下下":
           fortuneData.summary = "否极泰来终有时，暗尽明至见晨曦，逆旅归途多磨砺，绝处逢生现转机";
-          fortuneData.yi = ["坚定信念", "寻求支持", "积极行动", "保持希望"];
-          fortuneData.ji = ["绝望放弃", "封闭自我", "自怨自艾", "一蹶不振"];
+          fortuneData.yi = ["破屋：大胆舍弃那些早已不再产生价值的项目", "坏垣：勇敢打破阻碍你发展的条条框框", "除服：放下过去的职场光环，重新出发", "成服：穿上你最自信的战袍迎接挑战"];
+          fortuneData.ji = ["诸事不宜：不要在情绪冲动时做任何决定", "探病：远离那些总是向你传递负能量的同事", "出火：切忌在会议上大发雷霆", "安门：不要急于为自己设定新的舒适区"];
           fortuneData.career = "事业面临困难，需要重新规划，寻找新的方向。";
           fortuneData.wealth = "财运低迷，需要开源节流，避免投资风险。";
           fortuneData.relationship = "人际关系出现危机，需要真诚沟通，重建信任。";
@@ -171,8 +171,8 @@
         default:
           // 默认数据
           fortuneData.summary = "东风已至百花开，贵人引路财自来，放手去做莫犹疑，2026属于你的舞台";
-          fortuneData.yi = ["大胆开口", "尝试新领域", "主动社交", "给自己放个假"];
-          fortuneData.ji = ["犹豫不决", "熬夜内耗", "独自硬扛", "跟烂人纠缠"];
+          fortuneData.yi = ["祈福：心诚则灵，适合许愿", "纳采：与重要客户沟通顺畅", "开市：开启新项目的好日子"];
+          fortuneData.ji = ["动土：近期不宜大规模变动", "安葬：避免参与负面情绪重的场合", "破土：保持现状，切忌心浮气躁"];
           fortuneData.career = "事业运势高涨，适合大胆尝试新机会，贵人相助，事半功倍。";
           fortuneData.wealth = "财运亨通，正财稳定，偏财有望，适合理性投资。";
           fortuneData.relationship = "人际关系和谐，桃花运势佳，适合拓展社交圈。";
@@ -195,22 +195,22 @@
 要求：
 1. 整体基调积极正向，即使是下签也要给出"先苦后甜、否极泰来"的正向解读。
 2. 签文总结要通俗押韵、朗朗上口。
-3. 宜忌标签要具体可执行、不要太泛。
-4. 详细运势解读要结合铭文意象展开，让铭文和解读形成呼应。
+3. 宜忌内容需采用传统黄历及天干地支术语（如纳财、祈福、动土等），并严格结合用户选择的出生日期进行推算生成。注意：每一个宜/忌事项除了输出黄历术语外，还必须跟随一句简短的针对个人的白话解析（例如：“纳财：今日适合稳健理财”）。
+4. 详细运势解读要结合铭文意象展开，让铭文和解读形成呼应。注意：用户为职场人士，无学生参与，只需深度解读“事业运”，绝对不可提及“学业”。
 5. 语言风格兼具古风韵味和现代亲切感。
 
 请必须严格按照以下JSON格式返回结果，不要包含任何额外的文本或Markdown标记：
 {
   "summary": "运势签文总结（20-30字押韵短句）",
-  "yi": ["宜事项1", "宜事项2", "宜事项3", "宜事项4"],
-  "ji": ["忌事项1", "忌事项2", "忌事项3", "忌事项4"],
-  "career": "事业运/学业运解读（2-3句）",
+  "yi": ["黄历术语1：个人解析1", "黄历术语2：个人解析2", "黄历术语3：个人解析3"],
+  "ji": ["黄历术语1：个人解析1", "黄历术语2：个人解析2", "黄历术语3：个人解析3"],
+  "career": "事业运解读（2-3句，仅限事业）",
   "wealth": "财运解读（2-3句）",
   "relationship": "人际/桃花运解读（2-3句）",
   "health": "情绪/健康运解读（2-3句）"
 }`;
 
-        const userPrompt = `用户信息：\n昵称：${params.name || '有缘人'}\n生肖：${params.zodiac || '龙'}\n年龄段：${params.age || '90后'}\n签型：${params.signType || '上上签'}\n签面铭文：${params.inscription || '紫气东来'}\n请生成运势解读。`;
+        const userPrompt = `用户信息：\n昵称：${params.name || '有缘人'}\n出生日期：${params.birthDate || '2000年1月1日'}\n签型：${params.signType || '天赐签｜上上'}\n签面铭文：${params.inscription || '承天纳吉'}\n请生成运势解读。`;
 
         const response = await fetch(
           'https://api.minimax.chat/v1/text/chatcompletion_v2',
@@ -224,18 +224,28 @@
             body: JSON.stringify({
               model: 'abab6.5s-chat',
               messages: [
-                { role: 'system', name: 'system', content: systemPrompt },
-                { role: 'user', name: 'user', content: userPrompt }
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt }
               ]
             })
           }
         );
 
         clearTimeout(timer);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`HTTP ${response.status} - ${errText}`);
+        }
 
         const resultData = await response.json();
         let content = resultData.choices[0].message.content;
+        
+        // 尝试通过正则表达式提取 JSON，防止模型返回多余的问候语
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[0]);
+        }
+        
         content = content.replace(/```json/g, '').replace(/```/g, '').trim();
         return JSON.parse(content);
 
@@ -265,7 +275,7 @@
         // 将运势数据转换为URL参数
         const fortuneDataStr = encodeURIComponent(JSON.stringify(fortuneData));
         // 跳转到结果页
-        window.location.href = `result.html?fortune=${fortuneDataStr}&name=${encodeURIComponent(params.name)}&zodiac=${encodeURIComponent(params.zodiac)}&age=${encodeURIComponent(params.age)}&signType=${encodeURIComponent(params.signType)}&inscription=${encodeURIComponent(params.inscription)}`;
+        window.location.href = `result.html?fortune=${fortuneDataStr}&name=${encodeURIComponent(params.name || '')}&birthDate=${encodeURIComponent(params.birthDate || '')}&signType=${encodeURIComponent(params.signType || '')}&inscription=${encodeURIComponent(params.inscription || '')}`;
       }, 1000); // 至少1秒加载时间
     }
 

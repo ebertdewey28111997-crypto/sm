@@ -114,8 +114,8 @@
 
     <!-- 签头区域 -->
     <div class="签头区域">
-      <h3 class="签型大字" id="sign-type">上上签</h3>
-      <p class="铭文内容" id="inscription-text">紫气东来</p>
+      <h3 class="签型大字" id="sign-type">天赐签｜上上</h3>
+      <p class="铭文内容" id="inscription-text">承天纳吉</p>
     </div>
 
     <!-- 运势总结区域 -->
@@ -149,7 +149,7 @@
     <!-- 详细运势区域 -->
     <div class="详细运势区域">
       <div class="运势维度">
-        <h4>事业/学业运</h4>
+        <h4>事业运</h4>
         <p id="career-fortune">事业运势高涨，适合大胆尝试新机会，贵人相助，事半功倍。</p>
       </div>
       <div class="运势维度">
@@ -200,12 +200,12 @@
     // 默认运势数据
     const DEFAULT_FORTUNE = {
       name: params.name || "有缘人",
-      zodiac: params.zodiac || "龙",
-      signType: params.signType || "上上签",
-      inscription: params.inscription || "紫气东来",
+      birthDate: params.birthDate || "2000年1月1日",
+      signType: params.signType || "天赐签｜上上",
+      inscription: params.inscription || "承天纳吉",
       summary: "东风已至百花开，贵人引路财自来，放手去做莫犹疑，2026属于你的舞台",
-      yi: ["大胆开口", "尝试新领域", "主动社交", "给自己放个假"],
-      ji: ["犹豫不决", "熬夜内耗", "独自硬扛", "跟烂人纠缠"],
+      yi: ["纳财：会有意想不到的奖金或偏财入账", "祈福：心诚则灵，宜默默许下事业宏愿", "交易：签合同或谈大单的成功率极高", "开市：适合开启新项目或新业务"],
+      ji: ["动土：近期不宜搬家或大规模装修", "安葬：避免参与负能量较重的场合", "破土：切勿轻易打破现有的稳定局面", "作灶：注意饮食规律，切忌暴饮暴食"],
       career: "事业运势高涨，适合大胆尝试新机会，贵人相助，事半功倍。",
       wealth: "财运亨通，正财稳定，偏财有望，适合理性投资。",
       relationship: "人际关系和谐，桃花运势佳，适合拓展社交圈。",
@@ -308,7 +308,16 @@
       let fortuneData = DEFAULT_FORTUNE;
       if (params.fortune) {
         try {
-          fortuneData = JSON.parse(decodeURIComponent(params.fortune));
+          const parsedFortune = JSON.parse(decodeURIComponent(params.fortune));
+          // 合并数据，并强制使用 URL 中传递的签型和铭文参数
+          fortuneData = {
+            ...DEFAULT_FORTUNE,
+            ...parsedFortune,
+            signType: params.signType || DEFAULT_FORTUNE.signType,
+            inscription: params.inscription || DEFAULT_FORTUNE.inscription,
+            name: params.name || DEFAULT_FORTUNE.name,
+            birthDate: params.birthDate || DEFAULT_FORTUNE.birthDate
+          };
         } catch (e) {
           console.error('解析运势数据失败:', e);
         }

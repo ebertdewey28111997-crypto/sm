@@ -112,45 +112,29 @@
       </div>
       
       <div class="表单项">
-        <label for="zodiac">生肖</label>
-        <select id="zodiac" name="zodiac" required>
-          <option value="">请选择生肖</option>
-          <option value="鼠">鼠</option>
-          <option value="牛">牛</option>
-          <option value="虎">虎</option>
-          <option value="兔">兔</option>
-          <option value="龙">龙</option>
-          <option value="蛇">蛇</option>
-          <option value="马">马</option>
-          <option value="羊">羊</option>
-          <option value="猴">猴</option>
-          <option value="鸡">鸡</option>
-          <option value="狗">狗</option>
-          <option value="猪">猪</option>
-        </select>
-      </div>
-      
-      <div class="表单项">
-        <label for="age">年龄段</label>
-        <select id="age" name="age" required>
-          <option value="">请选择年龄段</option>
-          <option value="00后">00后</option>
-          <option value="95后">95后</option>
-          <option value="90后">90后</option>
-          <option value="85后">85后</option>
-          <option value="80后及以上">80后及以上</option>
-        </select>
+        <label>出生日期</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <select id="birthYear" name="birthYear" required style="flex: 1;">
+            <option value="">年</option>
+          </select>
+          <select id="birthMonth" name="birthMonth" required style="flex: 1;">
+            <option value="">月</option>
+          </select>
+          <select id="birthDay" name="birthDay" required style="flex: 1;">
+            <option value="">日</option>
+          </select>
+        </div>
       </div>
       
       <div class="表单项">
         <label for="signType">签型</label>
         <select id="signType" name="signType" required>
           <option value="">请选择签型</option>
-          <option value="上上签">上上签（大吉）</option>
-          <option value="上签">上签（吉）</option>
-          <option value="中签">中签（平）</option>
-          <option value="下签">下签（小凶化吉）</option>
-          <option value="下下签">下下签（否极泰来）</option>
+          <option value="天赐签｜上上">天赐签｜上上</option>
+          <option value="狂飙签｜上签">狂飙签｜上签</option>
+          <option value="暴涨签｜中签">暴涨签｜中签</option>
+          <option value="入心签｜下签">入心签｜下签</option>
+          <option value="蓄力签｜下下">蓄力签｜下下</option>
         </select>
       </div>
       
@@ -179,13 +163,38 @@
     const signTypeSelect = document.getElementById('signType');
     const inscriptionSelect = document.getElementById('inscription');
 
+    const birthYearSelect = document.getElementById('birthYear');
+    const birthMonthSelect = document.getElementById('birthMonth');
+    const birthDaySelect = document.getElementById('birthDay');
+
+    const currentYear = new Date().getFullYear();
+    for (let i = currentYear; i >= 1920; i--) {
+      birthYearSelect.add(new Option(i + '年', i));
+    }
+    for (let i = 1; i <= 12; i++) {
+      birthMonthSelect.add(new Option(i + '月', i));
+    }
+    function updateDays() {
+      const y = parseInt(birthYearSelect.value);
+      const m = parseInt(birthMonthSelect.value);
+      birthDaySelect.innerHTML = '<option value="">日</option>';
+      if (y && m) {
+        const d = new Date(y, m, 0).getDate();
+        for (let i = 1; i <= d; i++) {
+          birthDaySelect.add(new Option(i + '日', i));
+        }
+      }
+    }
+    birthYearSelect.addEventListener('change', updateDays);
+    birthMonthSelect.addEventListener('change', updateDays);
+
     // 铭文库数据
     const inscriptionLibrary = {
-      '上上签': ['紫气东来', '凤鸣九霄', '星河入梦', '金榜题名', '春风得意', '万事如意', '吉星高照', '福如东海'],
-      '上签': ['春山可望', '清风自来', '云开月明', '花开富贵', '福星临门', '心想事成', '吉祥如意', '前程似锦'],
-      '中签': ['静水流深', '守拙安然', '雾散花开', '平步青云', '稳中求进', '知足常乐', '和气生财', '平安是福'],
-      '下签': ['破茧重生', '风雨兼程', '淬火成金', '化险为夷', '柳暗花明', '否极泰来', '苦尽甘来', '峰回路转'],
-      '下下签': ['否极泰来', '暗尽明至', '逆旅归途', '绝处逢生', '枯木逢春', '时来运转', '转危为安', '遇难成祥']
+      '天赐签｜上上': ['承天纳吉', '乾元启瑞', '穹光入命', '元灵承瑞'],
+      '狂飙签｜上签': ['乘风凌云', '御势通玄', '星驰助运', '玄势自来'],
+      '暴涨签｜中签': ['潜盈内生', '润物藏盈', '静蓄芳华', '内蕴生机'],
+      '入心签｜下签': ['心扰清玄', '灵台蒙尘', '执念遮明', '离明受蔽'],
+      '蓄力签｜下下': ['潜渊藏锋', '潜龙守爻', '沉星敛芒', '静待天枢']
     };
 
     // 根据签型更新铭文选项
@@ -216,13 +225,14 @@
       const formData = new FormData(form);
       const data = Object.fromEntries(formData);
       
-      if (!data.name || !data.zodiac || !data.age || !data.signType || !data.inscription) {
+      if (!data.name || !data.birthYear || !data.birthMonth || !data.birthDay || !data.signType || !data.inscription) {
         alert('请填写所有必填项');
         return;
       }
 
+      const birthDate = `${data.birthYear}年${data.birthMonth}月${data.birthDay}日`;
       // 跳转到加载页
-      window.location.href = `loading.html?name=${encodeURIComponent(data.name)}&zodiac=${encodeURIComponent(data.zodiac)}&age=${encodeURIComponent(data.age)}&signType=${encodeURIComponent(data.signType)}&inscription=${encodeURIComponent(data.inscription)}`;
+      window.location.href = `loading.html?name=${encodeURIComponent(data.name)}&birthDate=${encodeURIComponent(birthDate)}&signType=${encodeURIComponent(data.signType)}&inscription=${encodeURIComponent(data.inscription)}`;
     });
   </script>
 </body>
