@@ -258,29 +258,39 @@
         saveBtn.textContent = '正在生成...';
         saveBtn.disabled = true;
 
-    // 临时创建一个隐藏的包裹层用于截图，避免截取到不需要的部分
+        const fortuneCard = document.querySelector('.页面主内容');
+
+        // 临时创建一个隐藏的包裹层用于截图，避免截取到不需要的部分
         const captureContainer = document.createElement('div');
         captureContainer.style.position = 'absolute';
         captureContainer.style.top = '-9999px';
         captureContainer.style.left = '0';
-        captureContainer.style.width = fortuneCard.offsetWidth + 'px';
+        captureContainer.style.width = '430px'; // 强制固定宽度，避免移动端错乱
+        captureContainer.style.maxWidth = '100vw'; 
         captureContainer.style.background = '#0a0a0a';
         captureContainer.style.color = '#e5e2e1';
+        captureContainer.style.padding = '0'; // 避免内外边距叠加
         
         // 克隆卡片内容
         const clonedCard = fortuneCard.cloneNode(true);
-        // 移除克隆节点中的按钮容器
+        
+        // 移除克隆节点中的不需要的元素
         const clonedBtnContainer = clonedCard.querySelector('.按钮容器');
         if(clonedBtnContainer) clonedBtnContainer.remove();
+        const clonedBackBtn = clonedCard.querySelector('.返回按钮');
+        if(clonedBackBtn) clonedBackBtn.remove();
         
         captureContainer.appendChild(clonedCard);
         document.body.appendChild(captureContainer);
         
+        // 由于克隆的DOM还在渲染中，加一点点延时保证样式被正确应用再截图
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
         // 使用html2canvas生成图片 (对克隆节点进行截图)
         const canvas = await html2canvas(captureContainer, {
           backgroundColor: '#0a0a0a',
-          scale: window.devicePixelRatio || 2, // 提高图片质量适配高分屏
-          logging: false,
+          scale: 2, // 移动端部分机型dpr过高会导致canvas过大生成失败，写死2倍通常是安全的平衡点
+          logging: true,
           useCORS: true,
           allowTaint: true // 允许跨域图片污染canvas
         });
