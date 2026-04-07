@@ -258,23 +258,35 @@
         saveBtn.textContent = '正在生成...';
         saveBtn.disabled = true;
 
-        // 截图前隐藏页面底部的按钮区域，避免被截入图片
-        const btnContainer = document.querySelector('.按钮容器');
-        btnContainer.style.display = 'none';
-
-        // 选择要截图的元素
-        const fortuneCard = document.querySelector('.页面主内容');
+    // 临时创建一个隐藏的包裹层用于截图，避免截取到不需要的部分
+        const captureContainer = document.createElement('div');
+        captureContainer.style.position = 'absolute';
+        captureContainer.style.top = '-9999px';
+        captureContainer.style.left = '0';
+        captureContainer.style.width = fortuneCard.offsetWidth + 'px';
+        captureContainer.style.background = '#0a0a0a';
+        captureContainer.style.color = '#e5e2e1';
         
-        // 使用html2canvas生成图片
-        const canvas = await html2canvas(fortuneCard, {
+        // 克隆卡片内容
+        const clonedCard = fortuneCard.cloneNode(true);
+        // 移除克隆节点中的按钮容器
+        const clonedBtnContainer = clonedCard.querySelector('.按钮容器');
+        if(clonedBtnContainer) clonedBtnContainer.remove();
+        
+        captureContainer.appendChild(clonedCard);
+        document.body.appendChild(captureContainer);
+        
+        // 使用html2canvas生成图片 (对克隆节点进行截图)
+        const canvas = await html2canvas(captureContainer, {
           backgroundColor: '#0a0a0a',
           scale: window.devicePixelRatio || 2, // 提高图片质量适配高分屏
           logging: false,
-          useCORS: true
+          useCORS: true,
+          allowTaint: true // 允许跨域图片污染canvas
         });
         
-        // 截图完成后恢复按钮区域
-        btnContainer.style.display = 'flex';
+        // 截图完成后清理克隆节点
+        document.body.removeChild(captureContainer);
         saveBtn.textContent = originalText;
         saveBtn.disabled = false;
 
@@ -286,13 +298,14 @@
         const previewImg = document.getElementById('preview-image');
         previewImg.src = image;
         modal.classList.add('显示');
+        
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
 
       } catch (error) {
         console.error('保存图片失败:', error);
         alert('保存图片失败，请稍后重试');
         
-        // 出错时也要恢复按钮状态
-        document.querySelector('.按钮容器').style.display = 'flex';
         saveBtn.textContent = originalText;
         saveBtn.disabled = false;
       }
