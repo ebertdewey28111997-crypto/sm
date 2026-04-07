@@ -78,7 +78,18 @@
     /* 生成图片预览弹窗（兼容微信保存） */
     .图片预览遮罩 { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; padding:2rem; backdrop-filter:blur(5px); }
     .图片预览遮罩.显示 { opacity:1; pointer-events:auto; }
-    .图片预览遮罩 img { max-width:100%; max-height:75vh; border-radius:12px; box-shadow:0 0 30px rgba(245,211,110,.3); object-fit:contain; }
+    .图片预览遮罩 img { 
+      max-width:100%; 
+      max-height:75vh; 
+      border-radius:12px; 
+      box-shadow:0 0 30px rgba(245,211,110,.3); 
+      object-fit:contain;
+      /* 强制开启 iOS 和 微信 的长按保存菜单 */
+      -webkit-touch-callout: default;
+      user-select: auto;
+      -webkit-user-select: auto;
+      pointer-events: auto;
+    }
     .保存提示文案 { color:var(--secondary-container); font-size:1rem; margin-top:1.5rem; letter-spacing:0.1em; font-family:var(--font-stack); text-align:center; animation:pulse 2s infinite; }
     .关闭预览按钮 { position:absolute; top:2rem; right:2rem; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.1); color:#fff; border:none; font-size:1.5rem; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 
@@ -248,62 +259,52 @@
       document.getElementById('health-fortune').textContent = fortune.health;
     }
 
-    // 保存图片功能（兼容微信环境）
+    // 保存图片功能（移动端/微信终极适配版）
     document.getElementById('save-btn').addEventListener('click', async () => {
       const saveBtn = document.getElementById('save-btn');
       const originalText = saveBtn.textContent;
       
       try {
-        // 更改按钮状态，防止重复点击
         saveBtn.textContent = '正在生成...';
         saveBtn.disabled = true;
 
+        // 1. 强制页面滚动到顶部，防止因滚动导致截图错位
+        window.scrollTo(0, 0);
+
+        // 2. 直接在当前可视DOM上操作：隐藏底部按钮和多余信息
         const fortuneCard = document.querySelector('.页面主内容');
+        const btnContainer = document.querySelector('.按钮容器');
+        const backBtn = document.getElementById('back-btn');
+        
+        if(btnContainer) btnContainer.style.display = 'none';
+        if(backBtn) backBtn.style.display = 'none';
 
-        // 临时创建一个隐藏的包裹层用于截图，避免截取到不需要的部分
-        const captureContainer = document.createElement('div');
-        captureContainer.style.position = 'absolute';
-        captureContainer.style.top = '-9999px';
-        captureContainer.style.left = '0';
-        captureContainer.style.width = '430px'; // 强制固定宽度，避免移动端错乱
-        captureContainer.style.maxWidth = '100vw'; 
-        captureContainer.style.background = '#0a0a0a';
-        captureContainer.style.color = '#e5e2e1';
-        captureContainer.style.padding = '0'; // 避免内外边距叠加
-        
-        // 克隆卡片内容
-        const clonedCard = fortuneCard.cloneNode(true);
-        
-        // 移除克隆节点中的不需要的元素
-        const clonedBtnContainer = clonedCard.querySelector('.按钮容器');
-        if(clonedBtnContainer) clonedBtnContainer.remove();
-        const clonedBackBtn = clonedCard.querySelector('.返回按钮');
-        if(clonedBackBtn) clonedBackBtn.remove();
-        
-        captureContainer.appendChild(clonedCard);
-        document.body.appendChild(captureContainer);
-        
-        // 由于克隆的DOM还在渲染中，加一点点延时保证样式被正确应用再截图
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        // 使用html2canvas生成图片 (对克隆节点进行截图)
-        const canvas = await html2canvas(captureContainer, {
+        // 强制给主容器加上背景色，防止截出透明底色变黑屏
+        const originalBg = fortuneCard.style.background;
+        fortuneCard.style.background = '#0a0a0a';
+
+        // 3. 等待100ms让移动端浏览器完成重绘
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // 4. 开始截图
+        const canvas = await html2canvas(fortuneCard, {
           backgroundColor: '#0a0a0a',
-          scale: 2, // 移动端部分机型dpr过高会导致canvas过大生成失败，写死2倍通常是安全的平衡点
-          logging: true,
+          scale: 2, // 保持2倍即可，太高容易内存溢出
           useCORS: true,
-          allowTaint: true // 允许跨域图片污染canvas
+          allowTaint: true,
+          scrollY: 0, // 从最顶部开始截
+          windowY: 0
         });
-        
-        // 截图完成后清理克隆节点
-        document.body.removeChild(captureContainer);
-        saveBtn.textContent = originalText;
-        saveBtn.disabled = false;
 
-        // 将canvas转换为图片URL
-        const image = canvas.toDataURL('image/png');
+        // 5. 截图完毕，恢复原有的DOM显示状态
+        if(btnContainer) btnContainer.style.display = 'flex';
+        if(backBtn) backBtn.style.display = 'flex'; // 或者保留原来的 display 状态
+        fortuneCard.style.background = originalBg;
+
+        // 6. 【关键优化】将图片转为 JPEG 格式 (质量 0.9)，极大减小 Base64 字符串体积，防止微信崩溃
+        const image = canvas.toDataURL('image/jpeg', 0.9);
         
-        // 弹出遮罩层，展示图片让用户长按保存
+        // 7. 弹出预览遮罩
         const modal = document.getElementById('image-preview-modal');
         const previewImg = document.getElementById('preview-image');
         previewImg.src = image;
@@ -316,6 +317,12 @@
         console.error('保存图片失败:', error);
         alert('保存图片失败，请稍后重试');
         
+        // 报错时也要恢复界面
+        const btnContainer = document.querySelector('.按钮容器');
+        if(btnContainer) btnContainer.style.display = 'flex';
+        const fortuneCard = document.querySelector('.页面主内容');
+        if (fortuneCard) fortuneCard.style.background = 'transparent';
+
         saveBtn.textContent = originalText;
         saveBtn.disabled = false;
       }
