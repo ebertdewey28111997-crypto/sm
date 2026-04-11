@@ -56,6 +56,7 @@
     .宜忌项 h4 { margin:0 0 .5rem; color:var(--secondary-container); font-size:.875rem; font-weight:700; letter-spacing:.1em; font-family:var(--font-stack); }
     .宜忌项 ul { margin:0; padding:0; list-style:none; }
     .宜忌项 li { margin:0 0 .5rem; color:var(--on-background); font-size:.875rem; line-height:1.4; font-family:var(--font-stack); }
+    .宜忌项 li b { color:var(--secondary-container); font-weight:700; }
 
     .详细运势区域 { margin-bottom:3rem; }
     .运势维度 { background:var(--surface-variant); border:1px solid rgba(245,211,110,.1); border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
@@ -115,7 +116,7 @@
 
     <!-- 签头区域 -->
     <div class="签头区域">
-      <h3 class="签型大字" id="sign-type">天赐签｜上上</h3>
+      <h3 class="签型大字" id="sign-type">天赐签</h3>
       <p class="铭文内容" id="inscription-text">承天纳吉</p>
     </div>
 
@@ -213,26 +214,24 @@
     // 渲染运势数据
     function renderFortune(fortune) {
       document.getElementById('inscription-text').textContent = fortune.inscription;
-      document.getElementById('sign-type').textContent = fortune.signType;
+      // 只显示 ｜ 前面的签名部分，去掉"下签""中签"等等级
+      const signName = fortune.signType ? fortune.signType.split(/[｜|]/)[0].trim() : fortune.signType;
+      document.getElementById('sign-type').textContent = signName;
       document.getElementById('summary-text').textContent = fortune.summary;
       
-      // 渲染宜列表
-      const yiList = document.getElementById('yi-list');
-      yiList.innerHTML = '';
-      fortune.yi.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        yiList.appendChild(li);
-      });
-      
-      // 渲染忌列表
-      const jiList = document.getElementById('ji-list');
-      jiList.innerHTML = '';
-      fortune.ji.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        jiList.appendChild(li);
-      });
+      // 渲染宜/忌列表：黄历术语用 * 代替，只展示白话解析
+      function renderYiJiList(listEl, items) {
+        listEl.innerHTML = '';
+        items.forEach(item => {
+          const colonIdx = item.search(/[：:]/);
+          const desc = colonIdx !== -1 ? item.slice(colonIdx + 1).trim() : item;
+          const li = document.createElement('li');
+          li.innerHTML = '<b>*</b> ' + desc;
+          listEl.appendChild(li);
+        });
+      }
+      renderYiJiList(document.getElementById('yi-list'), fortune.yi);
+      renderYiJiList(document.getElementById('ji-list'), fortune.ji);
       
       document.getElementById('career-fortune').textContent = fortune.career;
       document.getElementById('wealth-fortune').textContent = fortune.wealth;
